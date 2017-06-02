@@ -15852,11 +15852,11 @@ $$ F_{\beta} = (1 + \beta^2) \cdot \frac{precision \cdot recall}{\left( \beta^2 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Calculate accuracy</span>
-<span class="n">accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_test</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">greater_percent</span>
 
 <span class="c1"># TODO: Calculate F-score using the formula above for beta = 0.5</span>
 <span class="n">precision</span> <span class="o">=</span> <span class="n">accuracy</span>
@@ -15879,7 +15879,7 @@ $$ F_{\beta} = (1 + \beta^2) \cdot \frac{precision \cdot recall}{\left( \beta^2 
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Naive Predictor: [Accuracy score: 0.2438, F-score: 0.2872]
+<pre>Naive Predictor: [Accuracy score: 0.2478, F-score: 0.2917]
 </pre>
 </div>
 </div>
@@ -17077,9 +17077,9 @@ gradiant boosting tree is the most appropriate</p>
 <ul>
 <li>gradient boosting tree is a combination of many simple prediction models. In other words, an ensemble of models.</li>
 <li>In our case, the model is trained with existing census data (e.g., age, gender, etc), and uses that data to find rules that separate those with income above or below 50K.</li>
-<li>During successive rounds of training process, new rules (i.e., a decision trees) are learned that essentially answer yes/no given a specific person's data</li>
-<li>For each round, the model looks at where a learned tree predicted poorly and tries to add more weights for those so that, in the next round, our learners pay more attention to those that are more tricky cases.</li>
-<li>The trees are then combined to create the final model, that looks at new unknown individual data to make predictions.</li>
+<li>During successive rounds of training process, previous models work together to answer yes/no, given specific data.</li>
+<li>So in each particular round, we will use a function(loss function) to evaluate how bad our model performs and by minimizing this function will come up with a new function which will be add to those previous models.</li>
+<li>Lastly, all the moedles all together look at new unknown individual data to make predictions.</li>
 </ul>
 
 </div>
@@ -17191,70 +17191,6 @@ Final F-score on the testing data: 0.7503
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
-<span class="n">pred</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">accuracy_score</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[41]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.84831398562741844</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fbeta_score</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[43]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.62317887019456708</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -17271,13 +17207,13 @@ Final F-score on the testing data: 0.7503
 <tbody>
 <tr>
 <td style="text-align:center">Accuracy Score</td>
-<td style="text-align:center">0.8483</td>
+<td style="text-align:center">0.2478</td>
 <td style="text-align:center">0.8630</td>
 <td style="text-align:center">0.8695</td>
 </tr>
 <tr>
 <td style="text-align:center">F-score</td>
-<td style="text-align:center">0.6232</td>
+<td style="text-align:center">0.2917</td>
 <td style="text-align:center">0.7395</td>
 <td style="text-align:center">0.7503</td>
 </tr>
@@ -17294,7 +17230,7 @@ Final F-score on the testing data: 0.7503
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
 <ul>
-<li>Gradient boosting algorithm performs slightly better than logistic regression, as expected</li>
+<li>Gradient boosting algorithm performs much better than the benchmark, as expected</li>
 <li>tuning the learning rate of gradient boosting squeezed a little performance. But need to think whether it is worth the time spent.</li>
 </ul>
 
@@ -18014,7 +17950,7 @@ F-score on testing data: 0.7241
 <p><strong>Answer:</strong></p>
 <ul>
 <li>slightly worse</li>
-<li>definitely.</li>
+<li>definitely. we only lost little performance by using only 5% of the original features, which should save lots of time.</li>
 </ul>
 
 </div>
