@@ -16285,11 +16285,56 @@ IiIlogRLRERERESkRJRgiYiIiIiIlIgSLBERERERkRL5P1/cD6QtTFNvAAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <ul>
-<li>the state space has 5 dimensions('waypoint', 'light','left','right','oncoming'), the size should be  3 x 2 x 4 x 4 x 4 = 384, where each number represents the num of unique values for each dimension. Assume we need 100-1000 times to get a  converged Q value for each state, so we need at least 38400-384000, which I think is still managable for a single computer.</li>
+<li>the state space has 5 dimensions('waypoint', 'light','left','right','oncoming'), the size should be  3 x 2 x 4 x 4 x 4 = 384, where each number represents the num of unique values for each dimension. Given the code below provided by last reviewer, we can see that it needs at most 20000 steps to go through all states.</li>
 </ul>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sets</span> <span class="kn">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
+
+<span class="k">def</span> <span class="nf">chance_of_visiting_all_states</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">24</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">Set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">choice</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span><span class="o">/</span><span class="n">iterations</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="mi">20000</span>
+<span class="k">print</span> <span class="s2">&quot;Chance of visiting all states in {st} steps: {ch}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">st</span> <span class="o">=</span> <span class="n">steps</span><span class="p">,</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">chance_of_visiting_all_states</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="mi">384</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Chance of visiting all states in 20000 steps: 1.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -19797,9 +19842,22 @@ AAAASUVORK5CYII=
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong> 
-The 5 features are waypoint, light, left, right, oncoming respectively.</p>
+The 5 features are waypoint, light, left, right, oncoming respectively.
+Explaination for these are listed below:</p>
 <ul>
-<li>the first one is not right while the other two are optimal</li>
+<li><code>'waypoint'</code>, which is the direction the <em>Smartcab</em> should drive leading to the destination, relative to the <em>Smartcab</em>'s heading.</li>
+<li><p><code>'inputs'</code>, which is the sensor data from the <em>Smartcab</em>. It includes</p>
+<ul>
+<li><code>'light'</code>, the color of the light.</li>
+<li><code>'left'</code>, the intended direction of travel for a vehicle to the <em>Smartcab</em>'s left. Returns <code>None</code> if no vehicle is present.</li>
+<li><code>'right'</code>, the intended direction of travel for a vehicle to the <em>Smartcab</em>'s right. Returns <code>None</code> if no vehicle is present.</li>
+<li><code>'oncoming'</code>, the intended direction of travel for a vehicle across the intersection from the <em>Smartcab</em>. Returns <code>None</code> if no vehicle is present.</li>
+</ul>
+</li>
+<li><p>the agent chose forward when the state is ('left', 'green', 'forward', 'forward', 'forward'). It's not optimal since there is coming traffic to from the oncoming,left and right side.</p>
+</li>
+<li>the agent chose to pause when the state is ('right', 'red', 'forward', None, 'left'). That's optimal by common sense.</li>
+<li>the agent chose to go forward when the state is ('left', 'green', 'left', 'right', None).It's not optimal since there is coming traffic to from the left and right side.</li>
 </ul>
 
 </div>
@@ -19822,20 +19880,6 @@ The 5 features are waypoint, light, left, right, oncoming respectively.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Optional-Question-9">Optional Question 9<a class="anchor-link" href="#Optional-Question-9">&#182;</a></h3><p><em>There are two characteristics about the project that invalidate the use of future rewards in the Q-Learning algorithm. One characteristic has to do with the </em>Smartcab<em> itself, and the other has to do with the environment. Can you figure out what they are and why future rewards won't work for this project?</em></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer:</strong></p>
-<ul>
-<li>For the smartcab: all the cab needs to do is to do right at the current crossroad. If that, we will already get a high score.</li>
-<li>Regarding the environment: seems the environment is not deterministic and everything is random so gamma won't provide much infomation.</li>
-</ul>
 
 </div>
 </div>
