@@ -19842,23 +19842,12 @@ AAAASUVORK5CYII=
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong> 
-The 5 features are waypoint, light, left, right, oncoming respectively.
-Explaination for these are listed below:</p>
-<ul>
-<li><code>'waypoint'</code>, which is the direction the <em>Smartcab</em> should drive leading to the destination, relative to the <em>Smartcab</em>'s heading.</li>
-<li><p><code>'inputs'</code>, which is the sensor data from the <em>Smartcab</em>. It includes</p>
-<ul>
-<li><code>'light'</code>, the color of the light.</li>
-<li><code>'left'</code>, the intended direction of travel for a vehicle to the <em>Smartcab</em>'s left. Returns <code>None</code> if no vehicle is present.</li>
-<li><code>'right'</code>, the intended direction of travel for a vehicle to the <em>Smartcab</em>'s right. Returns <code>None</code> if no vehicle is present.</li>
-<li><code>'oncoming'</code>, the intended direction of travel for a vehicle across the intersection from the <em>Smartcab</em>. Returns <code>None</code> if no vehicle is present.</li>
-</ul>
-</li>
-<li><p>the agent chose forward when the state is ('left', 'green', 'forward', 'forward', 'forward'). It's not optimal since there is coming traffic to from the oncoming,left and right side.</p>
-</li>
-<li>the agent chose to pause when the state is ('right', 'red', 'forward', None, 'left'). That's optimal by common sense.</li>
+The 5 features are waypoint(the relative direction), light, left, right and oncoming. Here I got 2 suboptimal and 1 optimal samples</p>
+<ol>
+<li>the agent chose forward when the state is ('left', 'green', 'forward', 'forward', 'forward'). It's not optimal since there is coming traffic from the oncoming,left and right side.</li>
+<li>the agent chose to pause when the state is ('right', 'red', 'forward', None, 'left'). That's optimal by common sense, car should stop before red light.</li>
 <li>the agent chose to go forward when the state is ('left', 'green', 'left', 'right', None).It's not optimal since there is coming traffic to from the left and right side.</li>
-</ul>
+</ol>
 
 </div>
 </div>
